@@ -1,0 +1,195 @@
+{
+  "info": {
+    "name": "Fluxo Dining API",
+    "description": "Collection for Fluxo Restaurants Dining Tables and Waiters API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Tables",
+      "item": [
+        {
+          "name": "Get All Tables",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/tables",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["tables"]
+            }
+          }
+        },
+        {
+          "name": "Get Table by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/tables/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["tables", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Table",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"number\": 1,\n  \"capacity\": 4\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/tables",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["tables"]
+            }
+          }
+        },
+        {
+          "name": "Update/Put Table",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"number\": 1,\n  \"capacity\": 6\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/tables/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["tables", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Table",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/tables/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["tables", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Waiters",
+      "item": [
+        {
+          "name": "Get All Waiters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/waiters",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["waiters"]
+            }
+          }
+        },
+        {
+          "name": "Get Waiter by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/waiters/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["waiters", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Waiter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/waiters",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["waiters"]
+            }
+          }
+        },
+        {
+          "name": "Update/Put Waiter",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/waiters/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["waiters", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Waiter",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/waiters/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["waiters", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
