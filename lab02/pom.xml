@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.dining.fluxo</groupId>
-    <artifactId>fluxo</artifactId>
+    <artifactId>lab02</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>fluxo</name>
+    <name>lab02</name>
     <url>https://github.com/Fluxo-Stack</url>
 
     <properties>
