@@ -1,6 +1,6 @@
-package com.dining.fluxo.resources;
+package com.dining.fluxo.resolvers;
 
-public interface RestResource {
+public interface RestResolver {
     byte[] resolvePost(String payload) throws Exception;
 
     byte[] resolveGet(Integer id) throws Exception;

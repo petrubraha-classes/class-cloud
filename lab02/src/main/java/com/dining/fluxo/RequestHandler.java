@@ -1,6 +1,6 @@
 package com.dining.fluxo;
 
-import com.dining.fluxo.resources.RestResource;
+import com.dining.fluxo.resolvers.RestResolver;
 import com.dining.fluxo.exceptions.InvalidInputException;
 import com.dining.fluxo.exceptions.ResourceAlreadyExistsException;
 import com.dining.fluxo.exceptions.ResourceNotFoundException;
@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-public class RequestHandler<R extends RestResource> implements HttpHandler {
+public class RequestHandler<R extends RestResolver> implements HttpHandler {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private final Class<R> resourceClass;
 
@@ -78,7 +78,7 @@ public class RequestHandler<R extends RestResource> implements HttpHandler {
     }
 
     private byte[] resolveRequest(String method, String uri, String body) throws IOException, Exception {
-        RestResource resourceInstance = resourceClass.getDeclaredConstructor().newInstance();
+        RestResolver resourceInstance = resourceClass.getDeclaredConstructor().newInstance();
 
         Integer id = null;
         String[] parts = uri.split("/");

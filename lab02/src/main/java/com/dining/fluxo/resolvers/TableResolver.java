@@ -1,10 +1,10 @@
-package com.dining.fluxo.resources;
+package com.dining.fluxo.resolvers;
 
 import com.dining.fluxo.db.DatabaseConnection;
 import com.dining.fluxo.exceptions.InvalidInputException;
 import com.dining.fluxo.exceptions.ResourceAlreadyExistsException;
 import com.dining.fluxo.exceptions.ResourceNotFoundException;
-import com.dining.fluxo.models.Waiter;
+import com.dining.fluxo.models.Table;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.sql.Connection;
@@ -14,11 +14,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WaiterResource implements RestResource {
+public class TableResolver implements RestResolver {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private Connection connection;
 
-    public WaiterResource() {
+    public TableResolver() {
         this.connection = DatabaseConnection.getInstance().getConnection();
     }
 
@@ -28,65 +28,64 @@ public class WaiterResource implements RestResource {
             throw new InvalidInputException("Payload cannot be empty");
         }
 
-        Waiter waiter;
+        Table table;
         try {
-            waiter = MAPPER.readValue(payload, Waiter.class);
+            table = MAPPER.readValue(payload, Table.class);
         } catch (Exception e) {
             throw new InvalidInputException("Invalid JSON payload");
         }
 
-        if (waiter.getName() == null || waiter.getName().trim().isEmpty() || waiter.getEmail() == null
-                || waiter.getEmail().trim().isEmpty()) {
-            throw new InvalidInputException("Waiter name and email are required");
+        if (table.getNumber() == null || table.getCapacity() == null) {
+            throw new InvalidInputException("Table number and capacity are required");
         }
 
-        String checkSql = "SELECT id FROM waiters WHERE email = ?";
+        String checkSql = "SELECT id FROM tables WHERE number = ?";
         try (PreparedStatement checkStmt = connection.prepareStatement(checkSql)) {
-            checkStmt.setString(1, waiter.getEmail());
+            checkStmt.setInt(1, table.getNumber());
             var rs = checkStmt.executeQuery();
             if (rs.next()) {
-                throw new ResourceAlreadyExistsException("Waiter with email " + waiter.getEmail() + " already exists");
+                throw new ResourceAlreadyExistsException("Table with number " + table.getNumber() + " already exists");
             }
         }
 
-        String insertSql = "INSERT INTO waiters (name, email) VALUES (?, ?) RETURNING id, name, email";
+        String insertSql = "INSERT INTO tables (number, capacity) VALUES (?, ?) RETURNING id, number, capacity";
         try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
-            insertStmt.setString(1, waiter.getName());
-            insertStmt.setString(2, waiter.getEmail());
+            insertStmt.setInt(1, table.getNumber());
+            insertStmt.setInt(2, table.getCapacity());
             ResultSet rs = insertStmt.executeQuery();
             if (rs.next()) {
-                Waiter created = new Waiter(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
+                Table created = new Table(rs.getInt("id"), rs.getInt("number"), rs.getInt("capacity"));
                 return MAPPER.writeValueAsBytes(created);
             }
         }
 
-        throw new RuntimeException("Failed to create waiter");
+        throw new RuntimeException("Failed to create table");
     }
 
     @Override
     public byte[] resolveGet(Integer id) throws Exception {
         if (id == null) {
             // Get all
-            String sql = "SELECT id, name, email FROM waiters";
-            List<Waiter> waiters = new ArrayList<>();
+            String sql = "SELECT id, number, capacity FROM tables";
+            List<Table> tables = new ArrayList<>();
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
-                    waiters.add(new Waiter(rs.getInt("id"), rs.getString("name"), rs.getString("email")));
+                    tables.add(new Table(rs.getInt("id"), rs.getInt("number"), rs.getInt("capacity")));
                 }
             }
-            return MAPPER.writeValueAsBytes(waiters);
+            return MAPPER.writeValueAsBytes(tables);
         } else {
             // Get one
-            String sql = "SELECT id, name, email FROM waiters WHERE id = ?";
+            String sql = "SELECT id, number, capacity FROM tables WHERE id = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, id);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
-                    Waiter waiter = new Waiter(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
-                    return MAPPER.writeValueAsBytes(waiter);
+                    Table table = new Table(rs.getInt("id"), rs.getInt("number"), rs.getInt("capacity"));
+                    return MAPPER.writeValueAsBytes(table);
                 } else {
-                    throw new ResourceNotFoundException("Waiter with ID " + id + " not found");
+                    throw new ResourceNotFoundException("Table with ID " + id + " not found");
                 }
             }
         }
@@ -101,21 +100,20 @@ public class WaiterResource implements RestResource {
             throw new InvalidInputException("Payload cannot be empty");
         }
 
-        Waiter waiter;
+        Table table;
         try {
-            waiter = MAPPER.readValue(payload, Waiter.class);
+            table = MAPPER.readValue(payload, Table.class);
         } catch (Exception e) {
             throw new InvalidInputException("Invalid JSON payload");
         }
 
-        if (waiter.getName() == null || waiter.getName().trim().isEmpty() || waiter.getEmail() == null
-                || waiter.getEmail().trim().isEmpty()) {
-            throw new InvalidInputException("Waiter name and email are required");
+        if (table.getNumber() == null || table.getCapacity() == null) {
+            throw new InvalidInputException("Table number and capacity are required");
         }
 
         // Check if ID exists, if not, create it
         boolean exists = false;
-        String checkSql = "SELECT id FROM waiters WHERE id = ?";
+        String checkSql = "SELECT id FROM tables WHERE id = ?";
         try (PreparedStatement checkStmt = connection.prepareStatement(checkSql)) {
             checkStmt.setInt(1, id);
             ResultSet rs = checkStmt.executeQuery();
@@ -125,31 +123,31 @@ public class WaiterResource implements RestResource {
         }
 
         if (exists) {
-            String updateSql = "UPDATE waiters SET name = ?, email = ? WHERE id = ? RETURNING id, name, email";
+            String updateSql = "UPDATE tables SET number = ?, capacity = ? WHERE id = ? RETURNING id, number, capacity";
             try (PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
-                updateStmt.setString(1, waiter.getName());
-                updateStmt.setString(2, waiter.getEmail());
+                updateStmt.setInt(1, table.getNumber());
+                updateStmt.setInt(2, table.getCapacity());
                 updateStmt.setInt(3, id);
                 ResultSet rs = updateStmt.executeQuery();
                 if (rs.next()) {
-                    Waiter updated = new Waiter(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
+                    Table updated = new Table(rs.getInt("id"), rs.getInt("number"), rs.getInt("capacity"));
                     return MAPPER.writeValueAsBytes(updated);
                 }
             }
         } else {
-            String insertSql = "INSERT INTO waiters (id, name, email) VALUES (?, ?, ?) RETURNING id, name, email";
+            String insertSql = "INSERT INTO tables (id, number, capacity) VALUES (?, ?, ?) RETURNING id, number, capacity";
             try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
                 insertStmt.setInt(1, id);
-                insertStmt.setString(2, waiter.getName());
-                insertStmt.setString(3, waiter.getEmail());
+                insertStmt.setInt(2, table.getNumber());
+                insertStmt.setInt(3, table.getCapacity());
                 ResultSet rs = insertStmt.executeQuery();
                 if (rs.next()) {
-                    Waiter created = new Waiter(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
+                    Table created = new Table(rs.getInt("id"), rs.getInt("number"), rs.getInt("capacity"));
                     return MAPPER.writeValueAsBytes(created);
                 }
             }
         }
-        throw new RuntimeException("Failed to PUT waiter");
+        throw new RuntimeException("Failed to PUT table");
     }
 
     @Override
@@ -158,11 +156,15 @@ public class WaiterResource implements RestResource {
             throw new InvalidInputException("ID is required for DELETE");
         }
 
-        String deleteSql = "DELETE FROM waiters WHERE id = ?";
+        String deleteSql = "DELETE FROM tables WHERE id = ?";
         try (PreparedStatement deleteStmt = connection.prepareStatement(deleteSql)) {
             deleteStmt.setInt(1, id);
             int rowsAffected = deleteStmt.executeUpdate();
-            // Idempotent DELETE does not fail if item missing.
+            if (rowsAffected == 0) {
+                // To be idempotent, deleting a non-existent resource usually returns 200 or
+                // 204.
+                // We'll return empty bytes for success.
+            }
         }
         return new byte[0];
     }
