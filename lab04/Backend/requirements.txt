@@ -1,0 +1,18 @@
+# ── Direct dependencies ────────────────────────────────────────────────────
+Django==6.0.3
+django-sslserver==0.22
+python-dotenv==1.2.2
+requests==2.32.5
+pyOpenSSL==26.0.0
+
+# ── Transitive dependencies ────────────────────────────────────────────────
+asgiref==3.11.1          # Django async support
+certifi==2026.2.25       # TLS certificate bundle (requests)
+cffi==2.0.0              # C-level FFI used by cryptography
+charset-normalizer==3.4.6 # Charset detection (requests)
+cryptography==46.0.5     # SSL/TLS primitives (pyOpenSSL)
+idna==3.11               # Internationalised domain names (requests)
+pycparser==3.0           # C parser used by cffi
+sqlparse==0.5.5          # SQL formatter used by Django
+tzdata==2025.3           # Timezone data (Django)
+urllib3==2.6.3           # HTTP client (requests)

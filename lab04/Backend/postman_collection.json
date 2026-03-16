@@ -1,0 +1,220 @@
+{
+  "info": {
+    "name": "API Gateway",
+    "description": "Requests to all three endpoints require a valid gateway API key in the Authorization header.\nThe gateway validates the key against config/api_keys.json and returns 403 if it is missing or invalid.\nBackend service keys are injected automatically by the gateway and are never exposed to the client.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://localhost:8079",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "8a5f037e-61ea-426b-a25e-18af3a579603",
+      "type": "string",
+      "description": "Any key present in config/api_keys.json"
+    }
+  ],
+  "item": [
+    {
+      "name": "FluxoService",
+      "item": [
+        {
+          "name": "Get Waiter by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/waiters/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "waiters", "1"]
+            },
+            "description": "Retrieve a waiter by their ID.\nForwarded to → GET localhost:8080/waiters/{waiterId}\nNo Authorization header is sent to FluxoService."
+          }
+        },
+        {
+          "name": "Get Waiter by ID (403 – invalid key)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "invalid-key",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/waiters/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "waiters", "1"]
+            },
+            "description": "Demonstrates gateway rejection when the API key is not in api_keys.json."
+          }
+        }
+      ]
+    },
+    {
+      "name": "RouteService",
+      "item": [
+        {
+          "name": "Create Route",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeId\": \"f47ac10b-58cc-4372-a567-0e02b2c3d479\",\n  \"standIdList\": [\n    \"c0d20d4f-cc87-430b-90f7-111111111111\",\n    \"c0d20d4f-cc87-430b-90f7-222222222222\"\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/routes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes"]
+            },
+            "description": "Create a new route for a store.\nForwarded to → POST localhost:8081/api/routes\nThe gateway injects ROUTE_SERVICE_API_KEY as Authorization."
+          }
+        },
+        {
+          "name": "Create Route (400 – empty standIdList)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeId\": \"f47ac10b-58cc-4372-a567-0e02b2c3d479\",\n  \"standIdList\": []\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/routes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes"]
+            },
+            "description": "standIdList must not be empty – RouteService returns 400."
+          }
+        },
+        {
+          "name": "Create Route (403 – invalid key)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "invalid-key",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeId\": \"f47ac10b-58cc-4372-a567-0e02b2c3d479\",\n  \"standIdList\": [\n    \"c0d20d4f-cc87-430b-90f7-111111111111\"\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/routes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "routes"]
+            },
+            "description": "Gateway returns 403 before forwarding when api_key is invalid."
+          }
+        }
+      ]
+    },
+    {
+      "name": "StoreService",
+      "item": [
+        {
+          "name": "Create Store",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Central Burger\",\n  \"brandId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"description\": \"Flagship burger stand in the city center\",\n  \"imageUrl\": \"https://example.com/images/central-burger.jpg\",\n  \"timezone\": 1.0,\n  \"operatingHoursMap\": {\n    \"MON\": { \"begin\": { \"hour\": 9, \"minute\": 0 }, \"end\": { \"hour\": 22, \"minute\": 0 } },\n    \"TUE\": { \"begin\": { \"hour\": 9, \"minute\": 0 }, \"end\": { \"hour\": 22, \"minute\": 0 } },\n    \"WED\": { \"begin\": { \"hour\": 9, \"minute\": 0 }, \"end\": { \"hour\": 22, \"minute\": 0 } },\n    \"THU\": { \"begin\": { \"hour\": 9, \"minute\": 0 }, \"end\": { \"hour\": 22, \"minute\": 0 } },\n    \"FRI\": { \"begin\": { \"hour\": 9, \"minute\": 0 }, \"end\": { \"hour\": 23, \"minute\": 0 } },\n    \"SAT\": { \"begin\": { \"hour\": 10, \"minute\": 0 }, \"end\": { \"hour\": 23, \"minute\": 0 } },\n    \"SUN\": { \"begin\": { \"hour\": 11, \"minute\": 0 }, \"end\": { \"hour\": 21, \"minute\": 0 } }\n  },\n  \"geoCoordinates\": {\n    \"longitude\": -9.1393,\n    \"latitude\": 38.7169\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/stores",
+              "host": ["{{base_url}}"],
+              "path": ["api", "stores"]
+            },
+            "description": "Create a new store.\nForwarded to → POST localhost:8082/api/stores\nThe gateway injects STORE_SERVICE_API_KEY as Authorization.\n\nField constraints:\n- name: 3–63 chars, alphanumeric + hyphens + spaces\n- description: 8–255 chars\n- imageUrl: valid http/https image URL (.jpg/.jpeg/.png/.gif)\n- timezone: -12 to +14\n- operatingHoursMap: keyed by MON–SUN, each with begin/end {hour: 0-23, minute: 0-59}\n- geoCoordinates: longitude [-180,180], latitude [-90,90]"
+          }
+        },
+        {
+          "name": "Create Store (403 – invalid key)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "invalid-key",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ghost Store\",\n  \"brandId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/stores",
+              "host": ["{{base_url}}"],
+              "path": ["api", "stores"]
+            },
+            "description": "Gateway returns 403 before forwarding when api_key is invalid."
+          }
+        }
+      ]
+    }
+  ]
+}
