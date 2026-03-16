@@ -8,24 +8,22 @@ The interface exposes three buttons, one per gateway endpoint (GET `/api/waiters
 
 ## Tech stack
 
-| Concern           | Technology                         |
-| ----------------- | ---------------------------------- |
-| Framework         | React 19 + TypeScript              |
-| Build tool        | Vite 8                             |
-| Compiler          | React Compiler (via Babel plugin)  |
-| Linting           | ESLint 9 + typescript-eslint       |
-| Package manager   | npm                                |
+| Concern         | Technology                        |
+| --------------- | --------------------------------- |
+| Framework       | React 19 + TypeScript             |
+| Build tool      | Vite 8                            |
+| Compiler        | React Compiler (via Babel plugin) |
+| Linting         | ESLint 9 + typescript-eslint      |
+| Package manager | npm                               |
 
 ## Configuration
 
 Copy `.env.example` to `.env` and fill in the values:
 
 ```
-VITE_GATEWAY_URL="https://localhost:8079"   # Base URL of the API Gateway
-VITE_GATEWAY_KEY=""                         # A valid key from Backend/config/api_keys.json
+GATEWAY_URL="https://localhost:8079"   # Base URL of the API Gateway
+GATEWAY_KEY=""                         # A valid key from Backend/config/api_keys.json
 ```
-
-> Variables **must** be prefixed with `VITE_` to be exposed to the browser bundle by Vite.
 
 ## Setup
 

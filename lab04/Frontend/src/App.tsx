@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import './App.css';
 
-// Gateway base URL and API key from environment variables (no VITE_ prefix in .env)
-const GATEWAY_URL: string = (import.meta.env.VITE_GATEWAY_URL as string) ?? 'https://localhost:8079';
+const GATEWAY_URL: string = (import.meta.env.GATEWAY_URL as string) ?? 'https://localhost:8079';
 
-const GATEWAY_KEY: string = (import.meta.env.VITE_GATEWAY_KEY as string) ?? '';
+const GATEWAY_KEY: string = (import.meta.env.GATEWAY_KEY as string) ?? '';
 
 // Default placeholder payloads shown in the textarea for each button
 const DEFAULT_PAYLOADS: Record<number, string> = {
