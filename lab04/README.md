@@ -56,15 +56,30 @@ gradlew.bat bootRun
 
 ```bash
 cd Backend
-copy .env.example .env   # then fill in API keys and service URLs
+
+# Windows
+copy .env.example .env
+# Linux/Mac
+cp .env.example .env
+# then fill in API keys and service URLs
+
+# Windows
 bin\start.bat
+# Linux/Mac
+./bin/start.sh
 ```
 
 ### 4. Frontend
 
 ```bash
 cd Frontend
-copy .env.example .env   # then fill in VITE_GATEWAY_URL and VITE_GATEWAY_KEY
+
+# Windows
+copy .env.example .env
+# Linux/Mac
+cp .env.example .env
+# then fill in VITE_GATEWAY_URL and VITE_GATEWAY_KEY
+
 npm install
 npm run dev
 ```
