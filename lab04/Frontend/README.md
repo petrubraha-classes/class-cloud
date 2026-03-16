@@ -20,7 +20,7 @@ The interface exposes three buttons, one per gateway endpoint (GET `/api/waiters
 
 Copy `.env.example` to `.env` and fill in the values:
 
-```
+```dotenv
 GATEWAY_URL="https://localhost:8079"   # Base URL of the API Gateway
 GATEWAY_KEY=""                         # A valid key from Backend/config/api_keys.json
 ```
@@ -32,7 +32,10 @@ GATEWAY_KEY=""                         # A valid key from Backend/config/api_key
 npm install
 
 # 2. Copy and fill in environment variables
+# Windows
 copy .env.example .env
+# Linux/Mac
+cp .env.example .env
 ```
 
 ## Running
