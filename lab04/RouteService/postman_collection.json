@@ -1,0 +1,108 @@
+{
+  "info": {
+    "name": "Route Service API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Create Route (Valid)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "d1a92d47-ca90-48e0-bb15-38815edfa9ba",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/routes",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "routes"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"storeId\": \"f47ac10b-58cc-4372-a567-0e02b2c3d479\",\n  \"standIdList\": [\n    \"c0d20d4f-cc87-430b-90f7-111111111111\",\n    \"c0d20d4f-cc87-430b-90f7-222222222222\"\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "2. Create Route (Already Exists - 409) - Run #1 twice",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "d1a92d47-ca90-48e0-bb15-38815edfa9ba",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/routes",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "routes"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"storeId\": \"f47ac10b-58cc-4372-a567-0e02b2c3d479\",\n  \"standIdList\": [\n    \"c0d20d4f-cc87-430b-90f7-111111111111\",\n    \"c0d20d4f-cc87-430b-90f7-222222222222\"\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "3. Create Route (Invalid API Key - 403)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "invalid-key-or-missing",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/routes",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "routes"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"storeId\": \"a123ac10-58cc-4372-a567-0e02b2c3d479\",\n  \"standIdList\": [\n    \"c0d20d4f-cc87-430b-90f7-333333333333\"\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "4. Create Route (Invalid Input - 400)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "8a5f037e-61ea-426b-a25e-18af3a579603",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:8081/api/routes",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8081",
+          "path": ["api", "routes"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"storeId\": \"f47ac10b-58cc-4372-a567-0e02b2c3d479\",\n  \"standIdList\": []\n}"
+        }
+      }
+    }
+  ]
+}

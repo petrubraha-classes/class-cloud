@@ -1,0 +1,273 @@
+{
+  "info": {
+    "name": "Store Service API",
+    "description": "Direct requests to StoreService (http://localhost:8082).\nAll requests require a valid API key in the Authorization header (checked against config/api-keys.json).\n\nEndpoint : POST /api/stores\nResponses: 200 Created, 400 Bad Request, 403 Forbidden, 409 Conflict, 500 Internal Server Error",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8082",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "d1a92d47-ca90-48e0-bb15-38815edfa9ba",
+      "type": "string",
+      "description": "Any key present in StoreService/config/api-keys.json"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Create Store (200 – valid, full payload)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "{{api_key}}", "type": "text" },
+          { "key": "Content-Type",  "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw":      "{{base_url}}/api/stores",
+          "host":     ["{{base_url}}"],
+          "path":     ["api", "stores"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Central Burger\",\n  \"brandId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"description\": \"Flagship burger stand in the city center\",\n  \"imageUrl\": \"https://example.com/images/central-burger.jpg\",\n  \"timezone\": 1.0,\n  \"operatingHoursMap\": {\n    \"MON\": { \"begin\": { \"hour\": 9, \"minute\": 0 }, \"end\": { \"hour\": 22, \"minute\": 0 } },\n    \"TUE\": { \"begin\": { \"hour\": 9, \"minute\": 0 }, \"end\": { \"hour\": 22, \"minute\": 0 } },\n    \"WED\": { \"begin\": { \"hour\": 9, \"minute\": 0 }, \"end\": { \"hour\": 22, \"minute\": 0 } },\n    \"THU\": { \"begin\": { \"hour\": 9, \"minute\": 0 }, \"end\": { \"hour\": 22, \"minute\": 0 } },\n    \"FRI\": { \"begin\": { \"hour\": 9, \"minute\": 0 }, \"end\": { \"hour\": 23, \"minute\": 0 } },\n    \"SAT\": { \"begin\": { \"hour\": 10, \"minute\": 0 }, \"end\": { \"hour\": 23, \"minute\": 0 } },\n    \"SUN\": { \"begin\": { \"hour\": 11, \"minute\": 0 }, \"end\": { \"hour\": 21, \"minute\": 0 } }\n  },\n  \"geoCoordinates\": {\n    \"longitude\": -9.1393,\n    \"latitude\": 38.7169\n  }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "Happy-path request with all optional fields filled in.\nExpected: 200 OK with a StoreSummary body (storeId, name, brandId, description, imageUrl, geoCoordinates, operatingHoursMap, timezone, createdAt, updatedAt)."
+      }
+    },
+    {
+      "name": "2. Create Store (200 – valid, minimal payload)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "{{api_key}}", "type": "text" },
+          { "key": "Content-Type",  "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw":  "{{base_url}}/api/stores",
+          "host": ["{{base_url}}"],
+          "path": ["api", "stores"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Mini Store\",\n  \"brandId\": \"b2c3d4e5-f6a7-8901-bcde-f12345678901\",\n  \"description\": \"A minimal store entry\",\n  \"imageUrl\": \"https://example.com/mini.jpg\",\n  \"timezone\": 0.0,\n  \"geoCoordinates\": {\n    \"longitude\": 0.0,\n    \"latitude\": 0.0\n  }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "Valid request omitting the optional operatingHoursMap.\nExpected: 200 OK."
+      }
+    },
+    {
+      "name": "3. Create Store (409 – already exists, run #1 twice)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "{{api_key}}", "type": "text" },
+          { "key": "Content-Type",  "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw":  "{{base_url}}/api/stores",
+          "host": ["{{base_url}}"],
+          "path": ["api", "stores"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Central Burger\",\n  \"brandId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"description\": \"Flagship burger stand in the city center\",\n  \"imageUrl\": \"https://example.com/images/central-burger.jpg\",\n  \"timezone\": 1.0,\n  \"geoCoordinates\": {\n    \"longitude\": -9.1393,\n    \"latitude\": 38.7169\n  }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "Same name+brandId combination as request #1. Run after #1 to trigger the duplicate check.\nExpected: 409 Conflict – \"Resource already exists\"."
+      }
+    },
+    {
+      "name": "4. Create Store (403 – missing API key)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw":  "{{base_url}}/api/stores",
+          "host": ["{{base_url}}"],
+          "path": ["api", "stores"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Ghost Store\",\n  \"brandId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"description\": \"Store with no auth header\",\n  \"imageUrl\": \"https://example.com/ghost.jpg\",\n  \"timezone\": 1.0,\n  \"geoCoordinates\": { \"longitude\": 0.0, \"latitude\": 0.0 }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "No Authorization header sent.\nExpected: 403 Forbidden – \"Invalid or absent API key\"."
+      }
+    },
+    {
+      "name": "5. Create Store (403 – invalid API key)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "invalid-key-xyz", "type": "text" },
+          { "key": "Content-Type",  "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw":  "{{base_url}}/api/stores",
+          "host": ["{{base_url}}"],
+          "path": ["api", "stores"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Ghost Store\",\n  \"brandId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"description\": \"Store with wrong auth header\",\n  \"imageUrl\": \"https://example.com/ghost.jpg\",\n  \"timezone\": 1.0,\n  \"geoCoordinates\": { \"longitude\": 0.0, \"latitude\": 0.0 }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "Authorization header present but key is not in api-keys.json.\nExpected: 403 Forbidden – \"Invalid or absent API key\"."
+      }
+    },
+    {
+      "name": "6. Create Store (400 – name too short, < 3 chars)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "{{api_key}}", "type": "text" },
+          { "key": "Content-Type",  "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw":  "{{base_url}}/api/stores",
+          "host": ["{{base_url}}"],
+          "path": ["api", "stores"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"AB\",\n  \"brandId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"description\": \"A valid description here\",\n  \"imageUrl\": \"https://example.com/img.jpg\",\n  \"timezone\": 1.0,\n  \"geoCoordinates\": { \"longitude\": 0.0, \"latitude\": 0.0 }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "name violates @Size(min=3). Constraint: 3–63 chars, pattern ^[a-zA-Z0-9\\- ]+$.\nExpected: 400 Bad Request."
+      }
+    },
+    {
+      "name": "7. Create Store (400 – name with invalid characters)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "{{api_key}}", "type": "text" },
+          { "key": "Content-Type",  "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw":  "{{base_url}}/api/stores",
+          "host": ["{{base_url}}"],
+          "path": ["api", "stores"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Bad@Name!\",\n  \"brandId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"description\": \"A valid description here\",\n  \"imageUrl\": \"https://example.com/img.jpg\",\n  \"timezone\": 1.0,\n  \"geoCoordinates\": { \"longitude\": 0.0, \"latitude\": 0.0 }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "name contains '@' and '!' which are not in ^[a-zA-Z0-9\\- ]+$.\nExpected: 400 Bad Request."
+      }
+    },
+    {
+      "name": "8. Create Store (400 – description too short, < 8 chars)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "{{api_key}}", "type": "text" },
+          { "key": "Content-Type",  "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw":  "{{base_url}}/api/stores",
+          "host": ["{{base_url}}"],
+          "path": ["api", "stores"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Valid Name\",\n  \"brandId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"description\": \"Short\",\n  \"imageUrl\": \"https://example.com/img.jpg\",\n  \"timezone\": 1.0,\n  \"geoCoordinates\": { \"longitude\": 0.0, \"latitude\": 0.0 }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "description violates @Size(min=8). Constraint: 8–255 chars, pattern ^[a-zA-Z0-9\\-, ]+$.\nExpected: 400 Bad Request."
+      }
+    },
+    {
+      "name": "9. Create Store (400 – imageUrl not a valid image URL)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "{{api_key}}", "type": "text" },
+          { "key": "Content-Type",  "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw":  "{{base_url}}/api/stores",
+          "host": ["{{base_url}}"],
+          "path": ["api", "stores"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Valid Name\",\n  \"brandId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"description\": \"A valid description here\",\n  \"imageUrl\": \"https://example.com/page.html\",\n  \"timezone\": 1.0,\n  \"geoCoordinates\": { \"longitude\": 0.0, \"latitude\": 0.0 }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "imageUrl must end in .jpg/.jpeg/.png/.gif per @Pattern. '.html' does not match.\nExpected: 400 Bad Request."
+      }
+    },
+    {
+      "name": "10. Create Store (400 – timezone out of range, > 14)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "{{api_key}}", "type": "text" },
+          { "key": "Content-Type",  "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw":  "{{base_url}}/api/stores",
+          "host": ["{{base_url}}"],
+          "path": ["api", "stores"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Valid Name\",\n  \"brandId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"description\": \"A valid description here\",\n  \"imageUrl\": \"https://example.com/img.jpg\",\n  \"timezone\": 99.0,\n  \"geoCoordinates\": { \"longitude\": 0.0, \"latitude\": 0.0 }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "timezone violates @Max(14). Allowed range: -12 to +14.\nExpected: 400 Bad Request."
+      }
+    },
+    {
+      "name": "11. Create Store (400 – geoCoordinates longitude out of range)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "{{api_key}}", "type": "text" },
+          { "key": "Content-Type",  "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw":  "{{base_url}}/api/stores",
+          "host": ["{{base_url}}"],
+          "path": ["api", "stores"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Valid Name\",\n  \"brandId\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n  \"description\": \"A valid description here\",\n  \"imageUrl\": \"https://example.com/img.jpg\",\n  \"timezone\": 1.0,\n  \"geoCoordinates\": { \"longitude\": 999.0, \"latitude\": 38.7169 }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "longitude violates @Max(180). Allowed range: -180 to +180.\nExpected: 400 Bad Request."
+      }
+    },
+    {
+      "name": "12. Create Store (400 – malformed JSON body)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "{{api_key}}", "type": "text" },
+          { "key": "Content-Type",  "value": "application/json", "type": "text" }
+        ],
+        "url": {
+          "raw":  "{{base_url}}/api/stores",
+          "host": ["{{base_url}}"],
+          "path": ["api", "stores"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{ this is not valid json }",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "Triggers HttpMessageNotReadableException in GlobalExceptionHandler.\nExpected: 400 Bad Request – \"Invalid input: JSON syntax error\"."
+      }
+    }
+  ]
+}

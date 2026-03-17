@@ -21,7 +21,7 @@ The interface exposes three buttons, one per gateway endpoint (GET `/api/waiters
 Copy `.env.example` to `.env` and fill in the values:
 
 ```dotenv
-GATEWAY_URL="https://localhost:8079"   # Base URL of the API Gateway
+GATEWAY_URL="http://localhost:8079"   # Base URL of the API Gateway
 GATEWAY_KEY=""                         # A valid key from Backend/config/api_keys.json
 ```
 

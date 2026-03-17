@@ -8,7 +8,7 @@ A cloud computing lab composed of four independent projects: a React frontend, a
 Browser (Frontend :5173)
   │  VITE_GATEWAY_URL / VITE_GATEWAY_KEY
   ▼
-API Gateway (Backend :8079  HTTPS)
+API Gateway (Backend :8079  HTTP)
   ├── GET  /api/waiters/{id}  ──▶  FluxoService   :8080  (no auth)
   ├── POST /api/routes        ──▶  RouteService   :8081  (API key)
   └── POST /api/stores        ──▶  StoreService   :8082  (API key)
