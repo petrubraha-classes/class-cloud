@@ -1,0 +1,4 @@
+- [Organization](https://github.com/my-game-journal-stack)
+- [Documentation](https://docs.google.com/document/d/1-HukaVT_bal0IEe4NXKhod7V_0ubIu-RrXCGxaHlyTQ)
+- [Production](https://my-game-journal-frontend-765250393506.europe-west1.run.app/)
+- [Other](https://github.com/my-game-journal-stack)
